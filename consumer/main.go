@@ -74,7 +74,7 @@ func worker(idx int, in chan *Message, stop chan struct{}) {
 	for {
 		select {
 		case msg := <-in:
-			log.Printf("worker %d working on message: %v", idx, string(msg.Message.Value))
+			log.Printf("worker %d working on message: %v %v", idx, string(msg.Message.Key), string(msg.Message.Value))
 			log.Printf("sending further that host %v has done something with message...", msg.Host)
 		case <-stop:
 			log.Printf("stopping worker %d", idx)

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -30,21 +31,28 @@ func main() {
 	defer conn.Close()
 
 	for {
-		num := rand.Intn(100000-1000) + 1000
-		tmp := struct {
-			Somevalue int `json:"somevalue"`
-		}{
-			Somevalue: num,
+		numOfMessages := rand.Intn(50-5) + 5
+		messages := make([]kafka.Message, numOfMessages)
+		for i := 0; i < numOfMessages; i++ {
+			num := rand.Intn(100000-1000) + 1000
+			tmp := struct {
+				Somevalue int `json:"somevalue"`
+			}{
+				Somevalue: num,
+			}
+			b := new(bytes.Buffer)
+			if err := json.NewEncoder(b).Encode(tmp); err != nil {
+				panic(err)
+			}
+			messages[i].Key = []byte(fmt.Sprintf("MessageIndex_%d", i))
+			messages[i].Value = b.Bytes()
 		}
 
-		b := new(bytes.Buffer)
-		if err := json.NewEncoder(b).Encode(tmp); err != nil {
+		log.Printf("Sending %d messages", numOfMessages)
+		if _, err := conn.WriteMessages(messages...); err != nil {
 			panic(err)
 		}
 
-		if _, err := conn.WriteMessages(kafka.Message{Value: b.Bytes()}); err != nil {
-			panic(err)
-		}
 		sleepTime := time.Millisecond * time.Duration(rand.Intn(1000-100)+100)
 		time.Sleep(sleepTime)
 
