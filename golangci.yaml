@@ -1,0 +1,42 @@
+linters-settings:
+goconst:
+min-len: 2
+min-occurrences: 3
+gocritic:
+enabled-tags:
+- diagnostic
+- performance
+- style
+golint:
+min-confidence: 0
+misspell:
+locale: US
+gofmt:
+simplify: false
+
+linters:
+disable-all: true
+enable:
+- bodyclose
+- dogsled
+- errcheck
+- goconst
+- gocritic
+# - gofmt
+- revive
+- gosimple
+- govet
+- ineffassign
+- misspell
+- nakedret
+- noctx
+- nolintlint
+- rowserrcheck
+- staticcheck
+- stylecheck
+- typecheck
+- unconvert
+- unparam
+- unused
+- whitespace
+- execinquery
